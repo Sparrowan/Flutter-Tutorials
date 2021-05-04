@@ -5,7 +5,7 @@ import 'package:sparrowan_id/pages/loading.dart';
 
 void main() {
   runApp(MaterialApp(
-    initialRoute: '/location',
+    initialRoute: '/',
     routes: {
       '/': (context) => Loading(),
       '/home': (context) => Home(),
