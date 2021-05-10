@@ -1,11 +1,10 @@
 import 'package:flutter/cupertino.dart';
-
 import 'package:flutter/material.dart';
-
 import 'package:sparrowan_id/api/api_service.dart';
 import 'package:sparrowan_id/model/login_model.dart';
 
-import '../ProgressHUD.dart';
+import '../utils/ProgressHUD.dart';
+import '../shared_service.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -22,6 +21,8 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     loginRequestModel = new LoginRequestModel();
+    loginRequestModel.email = "eve.holt@reqres.in";
+    loginRequestModel.password = "cityslicka";
   }
 
   @override
@@ -68,12 +69,13 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(height: 20),
                         new TextFormField(
                           keyboardType: TextInputType.emailAddress,
+                          initialValue: loginRequestModel.email,
                           onSaved: (input) => loginRequestModel.email = input,
                           validator: (input) => !input.contains('@')
                               ? "Email Id should be valid"
                               : null,
                           decoration: new InputDecoration(
-                            hintText: "Email Address",
+                            hintText: "Email Address",                            
                             enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
                                     color: Theme.of(context)
@@ -93,6 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                           style:
                               TextStyle(color: Theme.of(context).accentColor),
                           keyboardType: TextInputType.text,
+                          initialValue: loginRequestModel.password,
                           onSaved: (input) =>
                               loginRequestModel.password = input,
                           validator: (input) => input.length < 3
@@ -147,13 +150,16 @@ class _LoginPageState extends State<LoginPage> {
                                     isApiCallProcess = false;
                                   });
 
-                                  // print(value.token);
-
                                   if (value.token.isNotEmpty) {
                                     final snackBar = SnackBar(
                                         content: Text("Login Successful"));
                                     scaffoldKey.currentState
                                         .showSnackBar(snackBar);
+
+                                    SharedService.setLoginDetails(
+                                        value);
+                                    Navigator.of(context)
+                                        .pushReplacementNamed('/home');
                                   } else {
                                     final snackBar =
                                         SnackBar(content: Text(value.error));
